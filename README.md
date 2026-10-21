@@ -281,8 +281,8 @@ Contributions, issues, and feature requests are welcome!
 ## 💬 Contact
 
 **Akash Kumar**  
-📧 Email: akash.kumar@example.com  
-🔗 LinkedIn: [linkedin.com/in/akashkumar](https://linkedin.com/in/akashkumar)  
+📧 Email: rajput78yash@gmail.com  
+🔗 LinkedIn: [linkedin.com/in/akashkumar](https://www.linkedin.com/in/akash-kashyap-dev/) 
 🐙 GitHub: [github.com/akashkumar](https://github.com/akashkumar)
 
 ---
