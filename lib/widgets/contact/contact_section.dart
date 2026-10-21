@@ -6,6 +6,7 @@ import '../../core/constants/app_constants.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/utils/responsive_helper.dart';
 import '../../providers/contact_provider.dart';
+import '../../providers/portfolio_provider.dart';
 import '../shared/animated_section.dart';
 import '../shared/glass_card.dart';
 import '../shared/gradient_button.dart';
@@ -83,23 +84,38 @@ class _ContactInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final profile = context.watch<PortfolioProvider>().profile;
+    final email =
+        profile.email.isNotEmpty ? profile.email : AppConstants.developerEmail;
+    final phone =
+        profile.phone.isNotEmpty ? profile.phone : AppConstants.developerPhone;
+    final location = profile.location.isNotEmpty
+        ? profile.location
+        : AppConstants.developerLocation;
+    final githubUrl = profile.githubUrl.isNotEmpty
+        ? profile.githubUrl
+        : AppConstants.githubUrl;
+    final linkedinUrl = profile.linkedinUrl.isNotEmpty
+        ? profile.linkedinUrl
+        : AppConstants.linkedinUrl;
+
     final contactItems = [
       {
         'icon': Icons.email_outlined,
         'label': 'Email',
-        'value': AppConstants.developerEmail,
-        'url': 'mailto:${AppConstants.developerEmail}',
+        'value': email,
+        'url': email.isNotEmpty ? 'mailto:$email' : null,
       },
       {
         'icon': Icons.phone_outlined,
         'label': 'Phone',
-        'value': AppConstants.developerPhone,
-        'url': 'tel:${AppConstants.developerPhone}',
+        'value': phone,
+        'url': phone.isNotEmpty ? 'tel:$phone' : null,
       },
       {
         'icon': Icons.location_on_outlined,
         'label': 'Location',
-        'value': AppConstants.developerLocation,
+        'value': location,
         'url': null,
       },
     ];
@@ -151,25 +167,32 @@ class _ContactInfo extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 16),
-        const Row(
+        Row(
           children: [
-            _SocialButton(
-              icon: Icons.code,
-              label: 'GitHub',
-              url: AppConstants.githubUrl,
-            ),
-            SizedBox(width: 12),
-            _SocialButton(
-              icon: Icons.work_outline,
-              label: 'LinkedIn',
-              url: AppConstants.linkedinUrl,
-            ),
-            // SizedBox(width: 12),
-            // _SocialButton(
-            //   icon: Icons.alternate_email,
-            //   label: 'Twitter',
-            //   url: AppConstants.twitterUrl,
-            // ),
+            if (githubUrl.isNotEmpty) ...[
+              _SocialButton(
+                icon: Icons.code,
+                label: 'GitHub',
+                url: githubUrl,
+              ),
+              const SizedBox(width: 12),
+            ],
+            if (linkedinUrl.isNotEmpty) ...[
+              _SocialButton(
+                icon: Icons.work_outline,
+                label: 'LinkedIn',
+                url: linkedinUrl,
+              ),
+              const SizedBox(width: 12),
+            ],
+            if (profile.twitterUrl.isNotEmpty &&
+                profile.twitterUrl != 'https://twitter.com/akashkumar') ...[
+              _SocialButton(
+                icon: Icons.alternate_email,
+                label: 'Twitter',
+                url: profile.twitterUrl,
+              ),
+            ],
           ],
         ),
       ],
@@ -365,9 +388,10 @@ class _ContactFormState extends State<_ContactForm> {
   }
 
   Future<void> _submit() async {
+    final provider = context.read<ContactProvider>();
+    if (provider.isLoading) return;
     if (!_formKey.currentState!.validate()) return;
 
-    final provider = context.read<ContactProvider>();
     await provider.submitMessage(
       name: _nameController.text,
       email: _emailController.text,
@@ -483,6 +507,7 @@ class _ContactFormState extends State<_ContactForm> {
               hint: 'Tell me about your project...',
               icon: Icons.message_outlined,
               maxLines: 5,
+              keyboardType: TextInputType.multiline,
               validator: (v) {
                 if (v == null || v.trim().isEmpty) return 'Message is required';
                 if (v.trim().length < 10) {
@@ -558,6 +583,7 @@ class _FormField extends StatelessWidget {
       decoration: InputDecoration(
         labelText: label,
         hintText: hint,
+        alignLabelWithHint: maxLines > 1,
         prefixIcon: Icon(icon, size: 20, color: AppColors.neonBlue),
       ),
     );

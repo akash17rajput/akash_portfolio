@@ -103,62 +103,73 @@ class PortfolioProvider extends ChangeNotifier {
   }
 
   void _listenToData() {
-    // 1. Profile
-    _profileSub = _firebaseService.getProfileStream().listen(
-      (data) {
-        if (data != null) {
-          final hasValidProfile = data.name.isNotEmpty ||
-              data.email.isNotEmpty ||
-              data.phone.isNotEmpty ||
-              data.githubUrl.isNotEmpty ||
-              data.linkedinUrl.isNotEmpty;
+    try {
+      // 1. Profile
+      _profileSub = _firebaseService.getProfileStream().listen(
+        (data) {
+          if (data != null) {
+            final hasValidProfile = data.name.isNotEmpty ||
+                data.email.isNotEmpty ||
+                data.phone.isNotEmpty ||
+                data.githubUrl.isNotEmpty ||
+                data.linkedinUrl.isNotEmpty;
 
-          // 👇 YAHAN ADD KARO
-          debugPrint("HAS VALID PROFILE: $hasValidProfile");
-          debugPrint("DATA EMAIL: ${data.email}");
-          debugPrint("DATA PHONE: ${data.phone}");
+            debugPrint("HAS VALID PROFILE: $hasValidProfile");
+            debugPrint("DATA EMAIL: ${data.email}");
+            debugPrint("DATA PHONE: ${data.phone}");
 
-          if (hasValidProfile) {
-            _profile = data;
+            if (hasValidProfile) {
+              _profile = data;
+            } else {
+              debugPrint(
+                  'PortfolioProvider: received invalid or empty profile from Firebase; keeping local fallback.');
+            }
           } else {
             debugPrint(
-                'PortfolioProvider: received invalid or empty profile from Firebase; keeping local fallback.');
+                'PortfolioProvider: Firebase profile stream returned null.');
           }
-        } else {
-          debugPrint(
-              'PortfolioProvider: Firebase profile stream returned null.');
-        }
 
-        _isLoadingProfile = false;
-        notifyListeners();
-      },
-    );
+          _isLoadingProfile = false;
+          notifyListeners();
+        },
+        onError: (e) {
+          debugPrint('PortfolioProvider: profile stream error: $e');
+          _isLoadingProfile = false;
+          notifyListeners();
+        },
+      );
 
-    // 2. Skills
-    _skillsSub = _firebaseService.getSkillsStream().listen(
-      (data) {
-        if (data.isNotEmpty) _skills = data;
-        _isLoadingSkills = false;
-        notifyListeners();
-      },
-      onError: (_) {
-        _isLoadingSkills = false;
-        notifyListeners();
-      },
-    );
+      // 2. Skills
+      _skillsSub = _firebaseService.getSkillsStream().listen(
+        (data) {
+          if (data.isNotEmpty) _skills = data;
+          _isLoadingSkills = false;
+          notifyListeners();
+        },
+        onError: (_) {
+          _isLoadingSkills = false;
+          notifyListeners();
+        },
+      );
 
-    // 3. Experience
-    _expSub = _firebaseService.getExperienceStream().listen(
-      (data) {
-        if (data.isNotEmpty) _experience = data;
-        _isLoadingExperience = false;
-        notifyListeners();
-      },
-      onError: (_) {
-        _isLoadingExperience = false;
-        notifyListeners();
-      },
-    );
+      // 3. Experience
+      _expSub = _firebaseService.getExperienceStream().listen(
+        (data) {
+          if (data.isNotEmpty) _experience = data;
+          _isLoadingExperience = false;
+          notifyListeners();
+        },
+        onError: (_) {
+          _isLoadingExperience = false;
+          notifyListeners();
+        },
+      );
+    } catch (e) {
+      debugPrint('PortfolioProvider: Firebase listen skipped ($e)');
+      _isLoadingProfile = false;
+      _isLoadingSkills = false;
+      _isLoadingExperience = false;
+    }
   }
 
   @override

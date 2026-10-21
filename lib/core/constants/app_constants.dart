@@ -5,10 +5,10 @@ class AppConstants {
   // Developer Info
   static const String developerName = 'Akash Kumar';
   static const String developerRole = 'Senior Flutter Developer';
-  static const String developerEmail = 'akash.kumar@example.com';
-  static const String developerPhone = '+91 98765 43210';
+  static const String developerEmail = 'rajput78yash@gmail.com';
+  static const String developerPhone = '+91 81686 05829';
   static const String developerLocation = 'India';
-  static const String developerExperience = '3+ Years';
+  static const String developerExperience = '4+ Years';
   static const String githubUrl = 'https://github.com/akash17rajput';
   static const String linkedinUrl =
       'https://www.linkedin.com/in/akash-kashyap-dev/';

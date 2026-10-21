@@ -7,7 +7,7 @@ import '../core/constants/app_constants.dart';
 
 /// Service layer for all Firebase Firestore operations
 class FirebaseService {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  FirebaseFirestore get _firestore => FirebaseFirestore.instance;
 
   // ─── Projects ────────────────────────────────────────────────────────────
 

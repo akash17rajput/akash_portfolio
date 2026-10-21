@@ -34,7 +34,8 @@ class ContactProvider extends ChangeNotifier {
       );
       await _firebaseService.submitMessage(msg);
       _status = ContactStatus.success;
-    } catch (e) {
+    } catch (e, stack) {
+      debugPrint('ContactProvider.submitMessage error: $e\n$stack');
       _status = ContactStatus.error;
       _errorMessage = 'Failed to send message. Please try again.';
     }
@@ -46,6 +47,14 @@ class ContactProvider extends ChangeNotifier {
   void reset() {
     _status = ContactStatus.idle;
     _errorMessage = null;
+    notifyListeners();
+  }
+
+  /// Helper for unit tests
+  @visibleForTesting
+  void setStatusForTesting(ContactStatus status, [String? errorMessage]) {
+    _status = status;
+    _errorMessage = errorMessage;
     notifyListeners();
   }
 }

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/utils/responsive_helper.dart';
+import '../../providers/portfolio_provider.dart';
 
 /// Footer widget with copyright and quick links
 class FooterWidget extends StatelessWidget {
@@ -91,8 +93,11 @@ class _Copyright extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final profile = context.watch<PortfolioProvider>().profile;
+    final name =
+        profile.name.isNotEmpty ? profile.name : AppConstants.developerName;
     return Text(
-      '© ${DateTime.now().year} ${AppConstants.developerName}. All rights reserved.',
+      '© ${DateTime.now().year} $name. All rights reserved.',
       style: TextStyle(
         fontSize: 13,
         color:

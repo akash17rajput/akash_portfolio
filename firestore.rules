@@ -8,6 +8,12 @@ service cloud.firestore {
       allow write: if request.auth != null;
     }
 
+    // Portfolio data: public read (profile, skills, experience), authenticated write
+    match /portfolio/{document=**} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+
     // Messages: public create (contact form), authenticated read/update
     match /messages/{messageId} {
       allow create: if true
